@@ -27,6 +27,7 @@ const journeySchema = mongoose.Schema({
     required: true
   },
   end: Date,
+  mobileNumber: String,
   contacts: [
     {
       name: {

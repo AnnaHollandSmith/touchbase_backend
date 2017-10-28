@@ -10,6 +10,8 @@ const routes = (server) => {
 
   server.post('/users', userControllers.create)
 
+  server.get('/users/:mobileNumber', userControllers.single)
+
   server.get('/journeytimes/', journeyTimeControllers.calculate)
 
   server.post('/journeys', journeyControllers.create)

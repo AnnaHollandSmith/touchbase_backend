@@ -5,6 +5,8 @@ import mongoose from 'mongoose'
 
 import routes from './routes'
 
+mongoose.Promise = global.Promise
+
 dotenv.config({
   path: path.join(__dirname, '../.env')
 })
@@ -18,6 +20,13 @@ const port = process.env.PORT || 3000
 
 server.use(restify.bodyParser())
 server.use(restify.queryParser())
+server.use(
+  function crossOrigin (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With')
+    return next()
+  }
+)
 
 routes(server)
 
