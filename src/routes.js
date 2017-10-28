@@ -2,7 +2,8 @@ import {
   homeControllers,
   userControllers,
   journeyTimeControllers,
-  journeyControllers
+  journeyControllers,
+  messageControllers
 } from './controllers'
 
 const routes = (server) => {
@@ -15,6 +16,8 @@ const routes = (server) => {
   server.get('/journeytimes/', journeyTimeControllers.calculate)
 
   server.post('/journeys', journeyControllers.create)
+
+  server.post('/receivemessage', messageControllers.receive)
 }
 
 export default routes
