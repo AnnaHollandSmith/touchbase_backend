@@ -19,11 +19,13 @@
   "dependencies": {
     "bunyan": "^1.8.8",
     "dotenv": "^4.0.0",
+    "libphonenumber-js": "^0.4.37",
     "mongoose": "^4.12.4",
-    "restify": "^4.3.0"
+    "restify": "^4.3.0",
+    "restify-errors": "^5.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.22.2",
+    "babel-cli": "^6.26.0",
     "babel-jest": "^19.0.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.6.1",
