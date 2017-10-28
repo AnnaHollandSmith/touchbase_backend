@@ -32,10 +32,7 @@ var journeySchema = _mongoose2.default.Schema({
     type: Date,
     default: new Date()
   },
-  eta: {
-    type: Date,
-    required: true
-  },
+  eta: Date,
   end: Date,
   mobileNumber: String,
   contacts: [{
@@ -47,7 +44,12 @@ var journeySchema = _mongoose2.default.Schema({
       type: String,
       required: true
     }
-  }]
+  }],
+  messagesSent: {
+    extension: {
+      type: Boolean
+    }
+  }
 });
 
 var Journey = _mongoose2.default.model('Journey', journeySchema);

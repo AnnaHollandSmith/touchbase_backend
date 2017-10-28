@@ -16,6 +16,8 @@ var routes = function routes(server) {
   server.get('/journeytimes/', _controllers.journeyTimeControllers.calculate);
 
   server.post('/journeys', _controllers.journeyControllers.create);
+
+  server.post('/receivemessage', _controllers.messageControllers.receive);
 };
 
 exports.default = routes;

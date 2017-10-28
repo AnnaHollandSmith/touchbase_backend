@@ -20,6 +20,8 @@ var _routes = require('./routes');
 
 var _routes2 = _interopRequireDefault(_routes);
 
+var _config = require('./config');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _mongoose2.default.Promise = global.Promise;
@@ -44,6 +46,7 @@ server.use(function crossOrigin(req, res, next) {
 });
 
 (0, _routes2.default)(server);
+(0, _config.cron)();
 
 server.listen(port, function () {
   console.log('Server is listening on port ' + port);

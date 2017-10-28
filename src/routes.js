@@ -17,7 +17,7 @@ const routes = (server) => {
 
   server.post('/journeys', journeyControllers.create)
 
-  server.post('/receivemessage', messageControllers.receive)
+  server.post('/receivemessage/', messageControllers.receive)
 }
 
 export default routes
