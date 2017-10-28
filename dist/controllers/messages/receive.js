@@ -7,7 +7,6 @@ Object.defineProperty(exports, "__esModule", {
 var _helpers = require('../../helpers');
 
 var receive = function receive(req, res, next) {
-  console.log('hello!!!!!!!!');
   var from = req.params.from;
   var content = decodeURI(req.params.content);
 
@@ -20,8 +19,6 @@ var receive = function receive(req, res, next) {
         res.send(200);
         next();
       }).catch(function (error) {
-        console.log(error);
-
         res.send(error);
         next();
       });

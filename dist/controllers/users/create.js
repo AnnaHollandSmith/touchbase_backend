@@ -32,7 +32,7 @@ var create = function create(req, res, next) {
 
   user.save(function (error, savedUser) {
     if (error) {
-      return next(new errors.BadGatewayError('Couldn\'t save to database'));
+      return next(new Error(error));
     }
 
     res.send(savedUser);

@@ -12,6 +12,8 @@ var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
 
+var _helpers = require('../helpers');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var extendJourney = function extendJourney(mobileNumber) {
@@ -24,7 +26,10 @@ var extendJourney = function extendJourney(mobileNumber) {
         throw new Error('Journey not found');
       }
       var newEta = (0, _moment2.default)(journey.eta).add(5, 'minutes').toDate();
-      _Journey2.default.update({ _id: journey._id }, { $set: { eta: newEta } }).then(resolve).catch(reject);
+      _Journey2.default.update({ _id: journey._id }, { $set: { eta: newEta } }).then(function (success) {
+        (0, _helpers.sendSms)(journey.mobileNumber, 'extensionReply');
+        resolve();
+      }).catch(reject);
     }).catch(function (error) {
       return reject(error);
     });
