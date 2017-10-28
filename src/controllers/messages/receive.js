@@ -1,6 +1,7 @@
 import { extendJourney } from '../../helpers'
 
 const receive = (req, res, next) => {
+  console.log('hello!!!!!!!!')
   const from = req.query.from
   let content = req.query.content
 
@@ -10,9 +11,14 @@ const receive = (req, res, next) => {
   switch (content) {
     case 'extend':
       console.log('we have made it here...')
-      extendJourney(from).then(res.send('OK')).catch(error => res.send(error))
+      extendJourney(from).then(res.send('OK')).catch(error => {
+        console.log(error)
+
+        res.send(error)
+      })
       break
     default:
+      console.log('unhandled')
       res.send('unhandled')
   }
 }
