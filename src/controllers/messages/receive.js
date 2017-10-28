@@ -10,11 +10,17 @@ const receive = (req, res, next) => {
   switch (content) {
     case 'extend':
       console.log('extend')
-      extendJourney(from).then(res.send('OK')).catch(error => {
-        console.log(error)
+      extendJourney(from)
+        .then(response => {
+          res.send(200)
+          next()
+        })
+        .catch(error => {
+          console.log(error)
 
-        res.send(error)
-      })
+          res.send(error)
+          next()
+        })
       break
     default:
       console.log('unhandled')

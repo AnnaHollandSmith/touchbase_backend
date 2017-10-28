@@ -13,10 +13,9 @@ var receive = function receive(req, res, next) {
 
   content = content.replace('TOUCHBASE ', '').toLowerCase();
 
-  console.log(content);
   switch (content) {
     case 'extend':
-      console.log('we have made it here...');
+      console.log('extend');
       (0, _helpers.extendJourney)(from).then(res.send('OK')).catch(function (error) {
         console.log(error);
 
