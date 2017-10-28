@@ -9,17 +9,17 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true
-  },
-  homeAddress: {
-    lat: {
-      type: Number,
-      required: true
-    },
-    lng: {
-      type: Number,
-      required: true
-    }
   }
+  // homeAddress: {
+  //   lat: {
+  //     type: Number,
+  //     required: true
+  //   },
+  //   lng: {
+  //     type: Number,
+  //     required: true
+  //   }
+  // }
 })
 
 const User = mongoose.model('User', userSchema)
