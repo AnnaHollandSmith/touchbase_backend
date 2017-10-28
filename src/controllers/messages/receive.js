@@ -2,8 +2,8 @@ import { extendJourney } from '../../helpers'
 
 const receive = (req, res, next) => {
   console.log('hello!!!!!!!!')
-  const from = req.query.from
-  let content = req.query.content
+  const from = req.params.from
+  let content = decodeURI(req.params.content)
 
   content = content.replace('TOUCHBASE ', '').toLowerCase()
 
