@@ -1,5 +1,6 @@
 import Journey from '../models/Journey'
 import moment from 'moment'
+import { sendSms } from '../helpers'
 
 const extendJourney = mobileNumber => {
   return new Promise((resolve, reject) => {
@@ -13,8 +14,11 @@ const extendJourney = mobileNumber => {
       }
       const newEta = moment(journey.eta).add(5, 'minutes').toDate()
       Journey.update({_id: journey._id}, {$set: {eta: newEta}})
-      .then(resolve)
-      .catch(reject)
+        .then(success => {
+          sendSms(journey.mobileNumber, 'extensionReply')
+          resolve()
+        })
+        .catch(reject)
     })
     .catch(error => reject(error))
   })

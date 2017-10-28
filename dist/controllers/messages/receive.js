@@ -16,10 +16,14 @@ var receive = function receive(req, res, next) {
   switch (content) {
     case 'extend':
       console.log('extend');
-      (0, _helpers.extendJourney)(from).then(res.send('OK')).catch(function (error) {
+      (0, _helpers.extendJourney)(from).then(function (response) {
+        res.send(200);
+        next();
+      }).catch(function (error) {
         console.log(error);
 
         res.send(error);
+        next();
       });
       break;
     default:

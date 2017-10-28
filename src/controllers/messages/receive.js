@@ -1,7 +1,6 @@
 import { extendJourney } from '../../helpers'
 
 const receive = (req, res, next) => {
-  console.log('hello!!!!!!!!')
   const from = req.params.from
   let content = decodeURI(req.params.content)
 
@@ -16,8 +15,6 @@ const receive = (req, res, next) => {
           next()
         })
         .catch(error => {
-          console.log(error)
-
           res.send(error)
           next()
         })

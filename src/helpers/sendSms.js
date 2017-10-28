@@ -3,7 +3,8 @@ import User from '../models/User'
 
 function createMessage (messageType, fields) {
   const messages = {
-    extension: `Hi ${fields.name}, we've noticed you haven't yet touched base at your destination. To add 5 minutes to your journey, text EXTEND to 84433.`
+    extension: `Hi ${fields.name}, we've noticed you haven't yet touched base at your destination. To add 5 minutes to your journey, text EXTEND to 84433.`,
+    extensionReply: `Hi ${fields.name}, we've extended your journey time by 5 minutes.`
   }
 
   return messages[messageType]

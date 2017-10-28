@@ -16,7 +16,7 @@ const create = (req, res, next) => {
 
   user.save((error, savedUser) => {
     if (error) {
-      return next(new errors.BadGatewayError(`Couldn't save to database`))
+      return next(new Error(error))
     }
 
     res.send(savedUser)
