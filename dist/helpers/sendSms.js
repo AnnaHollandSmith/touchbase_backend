@@ -14,16 +14,18 @@ var _User2 = _interopRequireDefault(_User);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function createMessage(messageType, fields) {
+function createMessage(messageType, fields, additional) {
   var messages = {
     extension: 'Hi ' + fields.name + ', we\'ve noticed you haven\'t yet touched base at your destination. To add 5 minutes to your journey, text EXTEND to 84433.',
-    extensionReply: 'Hi ' + fields.name + ', we\'ve extended your journey time by 5 minutes.'
+    extensionReply: 'Hi ' + fields.name + ', we\'ve extended your journey time by 5 minutes. Your new ETA is ' + additional.eta
   };
 
   return messages[messageType];
 }
 
 var sendSms = function sendSms(contacts, messageType) {
+  var additional = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
   return new Promise(function (resolve, reject) {
     var formatContactPromise = new Promise(function (resolve) {
       if (typeof contacts === 'string') {
@@ -38,7 +40,7 @@ var sendSms = function sendSms(contacts, messageType) {
 
     formatContactPromise.then(function (contacts) {
       contacts.forEach(function (contact) {
-        var content = createMessage(messageType, contact);
+        var content = createMessage(messageType, contact, additional);
 
         _requestPromise2.default.post('https://api.clockworksms.com/http/send.aspx?key=' + process.env.CLOCKWORK_API_KEY + '&to=' + contact.mobileNumber + '&content=' + content).then(function (response) {
           return resolve(response);

@@ -27,7 +27,7 @@ var extendJourney = function extendJourney(mobileNumber) {
       }
       var newEta = (0, _moment2.default)(journey.eta).add(5, 'minutes').toDate();
       _Journey2.default.update({ _id: journey._id }, { $set: { eta: newEta } }).then(function (success) {
-        (0, _helpers.sendSms)(journey.mobileNumber, 'extensionReply');
+        (0, _helpers.sendSms)(journey.mobileNumber, 'extensionReply', { eta: newEta });
         resolve();
       }).catch(reject);
     }).catch(function (error) {
