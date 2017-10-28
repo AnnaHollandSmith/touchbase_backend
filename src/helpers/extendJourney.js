@@ -15,7 +15,7 @@ const extendJourney = mobileNumber => {
       const newEta = moment(journey.eta).add(5, 'minutes').toDate()
       Journey.update({_id: journey._id}, {$set: {eta: newEta}})
         .then(success => {
-          sendSms(journey.mobileNumber, 'extensionReply')
+          sendSms(journey.mobileNumber, 'extensionReply', { eta: newEta })
           resolve()
         })
         .catch(reject)
