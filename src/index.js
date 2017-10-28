@@ -2,7 +2,6 @@ import restify from 'restify'
 import path from 'path'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
-
 import routes from './routes'
 
 mongoose.Promise = global.Promise

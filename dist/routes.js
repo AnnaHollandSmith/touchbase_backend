@@ -11,6 +11,8 @@ var routes = function routes(server) {
 
   server.post('/users', _controllers.userControllers.create);
 
+  server.get('/users/:mobileNumber', _controllers.userControllers.single);
+
   server.get('/journeytimes/', _controllers.journeyTimeControllers.calculate);
 
   server.post('/journeys', _controllers.journeyControllers.create);

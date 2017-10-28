@@ -37,6 +37,7 @@ var journeySchema = _mongoose2.default.Schema({
     required: true
   },
   end: Date,
+  mobileNumber: String,
   contacts: [{
     name: {
       type: String,

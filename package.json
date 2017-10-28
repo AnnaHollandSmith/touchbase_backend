@@ -15,7 +15,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "build": "rm -rf dist && babel src/ -d dist",
-    "serve": "npm run build && node dist/index.js"
+    "serve": "npm run build && node dist/index.js",
+    "heroku": "npm run build; git push heroku master"
   },
   "dependencies": {
     "bunyan": "^1.8.8",

@@ -22,6 +22,8 @@ var _routes2 = _interopRequireDefault(_routes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+_mongoose2.default.Promise = global.Promise;
+
 _dotenv2.default.config({
   path: _path2.default.join(__dirname, '../.env')
 });
@@ -35,6 +37,11 @@ var port = process.env.PORT || 3000;
 
 server.use(_restify2.default.bodyParser());
 server.use(_restify2.default.queryParser());
+server.use(function crossOrigin(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+  return next();
+});
 
 (0, _routes2.default)(server);
 

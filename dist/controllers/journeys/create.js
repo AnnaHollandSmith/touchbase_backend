@@ -16,6 +16,10 @@ var _Journey = require('../../models/Journey');
 
 var _Journey2 = _interopRequireDefault(_Journey);
 
+var _User = require('../../models/User');
+
+var _User2 = _interopRequireDefault(_User);
+
 var _journeyTimeCalculator = require('../../helpers/journeyTimeCalculator');
 
 var _journeyTimeCalculator2 = _interopRequireDefault(_journeyTimeCalculator);
@@ -31,19 +35,26 @@ var create = function create(req, res, next) {
       mode = _req$body.mode;
 
 
-  (0, _journeyTimeCalculator2.default)(origin, destination, mode).then(function (duration) {
-    return (0, _moment2.default)().add(duration, 'seconds').toDate();
-  }).then(function (etaDate) {
-    req.body.eta = etaDate;
+  _User2.default.findOne({ mobileNumber: req.body.mobileNumber }).then(function (user) {
+    if (!user) {
+      throw new Error('User not found');
+    }
+    (0, _journeyTimeCalculator2.default)(origin, destination, mode).then(function (duration) {
+      return (0, _moment2.default)().add(duration, 'seconds').toDate();
+    }).then(function (etaDate) {
+      req.body.eta = etaDate;
 
-    var journey = new _Journey2.default(req.body);
+      var journey = new _Journey2.default(req.body);
 
-    journey.save(function (error, savedJourney) {
-      if (error) {
-        return next(new errors.BadGatewayError('Couldn\'t save to database.'));
-      }
+      journey.save(function (error, savedJourney) {
+        if (error) {
+          return next(new errors.BadGatewayError('Couldn\'t save to database.'));
+        }
 
-      res.send(savedJourney);
+        res.send(savedJourney);
+      });
+    }).catch(function (error) {
+      return res.send(new Error(error));
     });
   }).catch(function (error) {
     return res.send(new Error(error));
