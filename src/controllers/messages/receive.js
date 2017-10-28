@@ -7,10 +7,9 @@ const receive = (req, res, next) => {
 
   content = content.replace('TOUCHBASE ', '').toLowerCase()
 
-  console.log(content)
   switch (content) {
     case 'extend':
-      console.log('we have made it here...')
+      console.log('extend')
       extendJourney(from).then(res.send('OK')).catch(error => {
         console.log(error)
 

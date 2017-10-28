@@ -7,8 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 var _helpers = require('../../helpers');
 
 var receive = function receive(req, res, next) {
-  var from = req.query.from;
-  var content = req.query.content;
+  console.log('hello!!!!!!!!');
+  var from = req.params.from;
+  var content = decodeURI(req.params.content);
 
   content = content.replace('TOUCHBASE ', '').toLowerCase();
 
@@ -17,10 +18,13 @@ var receive = function receive(req, res, next) {
     case 'extend':
       console.log('we have made it here...');
       (0, _helpers.extendJourney)(from).then(res.send('OK')).catch(function (error) {
-        return res.send(error);
+        console.log(error);
+
+        res.send(error);
       });
       break;
     default:
+      console.log('unhandled');
       res.send('unhandled');
   }
 };
