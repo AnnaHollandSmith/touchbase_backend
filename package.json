@@ -10,7 +10,8 @@
   "license": "MIT",
   "author": "Binoy Patel <me@binoy.io>",
   "scripts": {
-    "start": "nodemon src/index.js --exec babel-node",
+    "dev": "nodemon src/index.js --exec babel-node",
+    "start": "node src/index.js --exec babel-node",
     "test": "jest",
     "test:watch": "jest --watch",
     "build": "rm -rf dist && babel src/ -d dist",
