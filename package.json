@@ -21,6 +21,8 @@
     "dotenv": "^4.0.0",
     "libphonenumber-js": "^0.4.37",
     "mongoose": "^4.12.4",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
     "restify": "^4.3.0",
     "restify-errors": "^5.0.0"
   },
