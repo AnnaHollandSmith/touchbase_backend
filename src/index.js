@@ -3,6 +3,7 @@ import path from 'path'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import routes from './routes'
+import { cron } from './config'
 
 mongoose.Promise = global.Promise
 
@@ -28,6 +29,7 @@ server.use(
 )
 
 routes(server)
+cron()
 
 server.listen(port, () => {
   console.log(`Server is listening on port ${port}`)

@@ -22,10 +22,7 @@ const journeySchema = mongoose.Schema({
     type: Date,
     default: new Date()
   },
-  eta: {
-    type: Date,
-    required: true
-  },
+  eta: Date,
   end: Date,
   mobileNumber: String,
   contacts: [
@@ -39,7 +36,12 @@ const journeySchema = mongoose.Schema({
         required: true
       }
     }
-  ]
+  ],
+  messagesSent: {
+    extension: {
+      type: Boolean
+    }
+  }
 })
 
 const Journey = mongoose.model('Journey', journeySchema)

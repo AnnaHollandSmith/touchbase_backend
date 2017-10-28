@@ -7,29 +7,29 @@ import journeyTimeCalculator from '../../helpers/journeyTimeCalculator'
 const create = (req, res, next) => {
   const { origin, destination, mode } = req.body
 
-User.findOne({ mobileNumber: req.body.mobileNumber})
+  User.findOne({ mobileNumber: req.body.mobileNumber })
   .then(user => {
-    if(!user) {
+    if (!user) {
       throw new Error('User not found')
     }
     journeyTimeCalculator(origin, destination, mode)
-    .then(duration => moment().add(duration, 'seconds').toDate())
-    .then(etaDate => {
-      req.body.eta = etaDate
+      .then(duration => moment().add(duration, 'seconds').toDate())
+      .then(etaDate => {
+        req.body.eta = etaDate
 
-      const journey = new Journey(req.body)
+        const journey = new Journey(req.body)
 
-      journey.save((error, savedJourney) => {
-        if (error) {
-          return next(new errors.BadGatewayError(`Couldn't save to database.`))
-        }
+        journey.save((error, savedJourney) => {
+          if (error) {
+            return next(new errors.BadGatewayError(`Couldn't save to database.`))
+          }
 
-        res.send(savedJourney)
+          res.send(savedJourney)
+        })
       })
-    })
-    .catch(error => res.send(new Error(error)))
+      .catch(error => res.send(new Error(error)))
   })
   .catch(error => res.send(new Error(error)))
 }
 
-export default create 
+export default create

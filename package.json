@@ -24,6 +24,7 @@
     "libphonenumber-js": "^0.4.37",
     "moment": "^2.19.1",
     "mongoose": "^4.12.4",
+    "node-schedule": "^1.2.5",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
     "restify": "^4.3.0",
