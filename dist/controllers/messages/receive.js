@@ -4,19 +4,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _requestPromise = require('request-promise');
+
+var _requestPromise2 = _interopRequireDefault(_requestPromise);
+
 var _helpers = require('../../helpers');
 
 var _Config = require('../../models/Config');
 
 var _Config2 = _interopRequireDefault(_Config);
-
-var _Journey = require('../../models/Journey');
-
-var _Journey2 = _interopRequireDefault(_Journey);
-
-var _sendSms = require('../../helpers/sendSms');
-
-var _sendSms2 = _interopRequireDefault(_sendSms);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26,90 +22,78 @@ var receive = function receive(req, res, next) {
 
   content = content.replace('TBS ', '').toLowerCase();
 
-  if (content.includes('escalate')) {
-    console.log('escalate');
-
-    var reference = Number(content.replace('escalate ', ''));
-    console.log('Reference' + reference);
-
-    _Journey2.default.findOne({ reference: reference }).then(function (journey) {
-      console.log('sending sms');
-      (0, _sendSms2.default)(process.env.OUR_NUMBER, 'escalate', journey).then(function () {
+  switch (content) {
+    case 'extend':
+      console.log('extend');
+      (0, _helpers.extendJourney)(from).then(function (response) {
+        res.send(200);
+        next();
+      }).catch(function () {
         res.send(200);
         next();
       });
-    });
-  } else {
-    console.log('content var:' + content);
-    switch (content) {
-      case 'extend':
-        console.log('extend');
-        (0, _helpers.extendJourney)(from).then(function (response) {
-          res.send(200);
-          next();
-        }).catch(function () {
-          res.send(200);
-          next();
-        });
-        break;
-      case 'home':
-        console.log('home');
-        (0, _helpers.terminateJourney)(from).then(function (response) {
-          res.send(200);
-          next();
-        }).catch(function () {
-          res.send(200);
-          next();
-        });
-        break;
-      case 'register':
-        console.log('register');
-        (0, _sendSms2.default)(process.env.OUR_NUMBER, 'register').then(function () {
-          res.send(200);
-          next();
-        });
-        break;
-      case 'yes':
-        _Config2.default.findOne({ key: 'is999Registered' }).then(function (configVar) {
-          var registerPromise = new Promise(function (resolve, reject) {
-            if (!configVar) {
-              var newConfig = new _Config2.default({
-                key: 'is999Registered',
-                value: true
-              });
+      break;
+    case 'home':
+      console.log('home');
+      (0, _helpers.terminateJourney)(from).then(function (response) {
+        res.send(200);
+        next();
+      }).catch(function () {
+        res.send(200);
+        next();
+      });
+      break;
+    case 'register':
+      console.log('register');
+      send999Sms(from, 'After reading ALL this message, SEND THE WORD \'' + process.env.KEYWORD + 'YES\' TO ' + process.env.NUMBER + ' TO COMPLETE YOUR REGISTRATION - otherwise your phone isn\'t registered. In an emergency, you will know your message has been received ONLY when you get a reply from an emergency service; until then try other methods. Full details, Terms & Conditions are available at www.emergencysms.org.uk').then(function () {
+        res.send(200);
+        next();
+      });
+      break;
+    case 'yes':
+      _Config2.default.findOne({ key: 'is999Registered' }).then(function (configVar) {
+        if (!configVar) {
+          var newConfig = new _Config2.default({
+            key: 'is999Registered',
+            value: true
+          });
 
-              newConfig.save(function (error, savedConfigVar) {
-                if (error) {
-                  console.log(error);
-                  reject(error);
-                }
-
-                resolve();
-              });
-            } else {
-              _Config2.default.update({ _id: configVar._id, key: 'is999Registered' }, { $set: { value: true } }).then(function () {
-                resolve();
-              }).catch(reject);
+          newConfig.save(function (error, savedConfigVar) {
+            if (error) {
+              throw new Error(error);
             }
-          });
 
-          registerPromise.then(function () {
-            (0, _sendSms2.default)(process.env.NUMBER, 'registered');
-            res.send(200);
-            next();
+            send999Sms(from, 'Your telephone number is registered with the emergencySMS Service. Please don\'t reply to this message. For more information go to http://emergencySMS.org.uk').then(function () {
+              res.send(200);
+              next();
+            }).catch(function (error) {
+              return console.log(error);
+            });
           });
-        });
-        break;
-      default:
-        if (content.includes('Police.')) {
-          console.log('EMERGENCY REQUEST RECEIVED:' + content);
-          res.send(200);
         } else {
-          console.log('unhandled');
-          res.send(200);
+          _Config2.default.update({ _id: configVar._id, key: 'is999Registered' }, { $set: { value: true } }).then(function () {
+            send999Sms(from, 'Your telephone number is registered with the emergencySMS Service. Please don\'t reply to this message. For more information go to http://emergencySMS.org.uk').then(function () {
+              res.send(200);
+              next();
+            }).catch(function (error) {
+              return console.log(error);
+            });
+          }).catch(function (error) {
+            return console.log(error);
+          });
         }
-    }
+      });
+      break;
+    default:
+      console.log('unhandled');
+      res.send('unhandled');
   }
+};
+
+var send999Sms = function send999Sms(mobileNumber, message) {
+  return new Promise(function (resolve, reject) {
+    _requestPromise2.default.post('https://api.clockworksms.com/http/send.aspx?key=' + process.env.CLOCKWORK_API_KEY + '&to=' + mobileNumber + '&content=' + message).then(resolve).catch(reject);
+  });
 };
 
 exports.default = receive;
