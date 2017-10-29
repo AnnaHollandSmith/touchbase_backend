@@ -37,6 +37,7 @@ var receive = function receive(req, res, next) {
     console.log('Reference' + reference);
 
     _Journey2.default.findOne({ reference: reference }).then(function (journey) {
+      console.log('sending sms');
       (0, _sendSms2.default)(process.env.NUMBER, 'escalate', journey);
       res.send(200);
       next();

@@ -10,8 +10,8 @@ function createMessage (messageType, fields, additional) {
     terminateReply: `Thanks ${fields.name}. Glad you have made it home safely.`,
     contact: `Hi ${fields.name}, ${additional.name} is using the TouchBase app to get home safely. They have not marked their journey as complete. Please try and contact them on ${additional.mobileNumber}.`,
     escalate: `${process.env.KEYWORD}Police. Person Reported Missing. Last seen ${additional.start}. Mobile number ${additional.mobileNumber}. Last known coordinates ${additional.origin.lat}, ${additional.origin.lng}. Heading towards ${additional.destination.lat}, ${additional.destination.lng}`,
-    register: `After reading ALL this message, SEND THE WORD '${process.env.KEYWORD}YES' TO ${process.env.NUMBER} TO COMPLETE YOUR REGISTRATION - otherwise your phone isn't registered. In an emergency, you will know your message has been received ONLY when you get a reply from an emergency service; until then try other methods. Full details, Terms & Conditions are available at www.emergencysms.org.uk`,
-    registered: `Your telephone number is registered with the emergencySMS Service. Please don't reply to this message. For more information go to http://emergencySMS.org.uk`
+    register: `${process.env.KEYWORD}After reading ALL this message, SEND THE WORD '${process.env.KEYWORD}YES' TO ${process.env.NUMBER} TO COMPLETE YOUR REGISTRATION - otherwise your phone isn't registered. In an emergency, you will know your message has been received ONLY when you get a reply from an emergency service; until then try other methods. Full details, Terms & Conditions are available at www.emergencysms.org.uk`,
+    registered: `${process.env.KEYWORD}Your telephone number is registered with the emergencySMS Service. Please don't reply to this message. For more information go to http://emergencySMS.org.uk`
   }
 
   return messages[messageType]
@@ -24,8 +24,8 @@ function getAppMessage (messageType, fields, additional) {
     terminateReply: `Thanks ${fields.name}. Glad you have made it home safely.`,
     contact: `${additional.name} is using the TouchBase app to get home safely. They have not marked their journey as complete. Please try and contact them on ${additional.mobileNumber}.`,
     escalate: `${process.env.KEYWORD}Police. Person Reported Missing. Last seen ${additional.start}. Mobile number ${additional.mobileNumber}. Last known coordinates ${additional.origin.lat}, ${additional.origin.lng}. Heading towards ${additional.destination.lat}, ${additional.destination.lng}`,
-    register: `After reading ALL this message, SEND THE WORD '${process.env.KEYWORD}YES' TO ${process.env.NUMBER} TO COMPLETE YOUR REGISTRATION - otherwise your phone isn't registered. In an emergency, you will know your message has been received ONLY when you get a reply from an emergency service; until then try other methods. Full details, Terms & Conditions are available at www.emergencysms.org.uk`,
-    registered: `Your telephone number is registered with the emergencySMS Service. Please don't reply to this message. For more information go to http://emergencySMS.org.uk`
+    register: `${process.env.KEYWORD}After reading ALL this message, SEND THE WORD '${process.env.KEYWORD}YES' TO ${process.env.NUMBER} TO COMPLETE YOUR REGISTRATION - otherwise your phone isn't registered. In an emergency, you will know your message has been received ONLY when you get a reply from an emergency service; until then try other methods. Full details, Terms & Conditions are available at www.emergencysms.org.uk`,
+    registered: `${process.env.KEYWORD}Your telephone number is registered with the emergencySMS Service. Please don't reply to this message. For more information go to http://emergencySMS.org.uk`
   }
 
   return messages[messageType]
