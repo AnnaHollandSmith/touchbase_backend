@@ -37,9 +37,9 @@ const sendSms = (contacts, messageType, additional = {}) => {
       if (typeof contacts === 'string') {
         // contacts is a number so look up User
         if (contacts === process.env.NUMBER) {
-          resolve({
+          resolve([{
             mobileNumber: process.env.NUMBER
-          })
+          }])
         } else {
           User.findOne({mobileNumber: contacts})
             .then(user => {

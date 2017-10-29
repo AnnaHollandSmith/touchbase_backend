@@ -58,9 +58,9 @@ var sendSms = function sendSms(contacts, messageType) {
       if (typeof contacts === 'string') {
         // contacts is a number so look up User
         if (contacts === process.env.NUMBER) {
-          resolve({
+          resolve([{
             mobileNumber: process.env.NUMBER
-          });
+          }]);
         } else {
           _User2.default.findOne({ mobileNumber: contacts }).then(function (user) {
             resolve([user]);
