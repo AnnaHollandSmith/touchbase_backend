@@ -60,15 +60,19 @@ const receive = (req, res, next) => {
                   res.send(200)
                   next()
                 })
+                .catch(error => console.log(error))
             })
           } else {
             Config.update({ _id: configVar._id, key: 'is999Registered' }, { $set: { value: true } })
-
-            send999Sms(from, `Your telephone number is registered with the emergencySMS Service. Please don't reply to this message. For more information go to http://emergencySMS.org.uk`)
-            .then(() => {
-              res.send(200)
-              next()
-            })
+              .then(() => {
+                send999Sms(from, `Your telephone number is registered with the emergencySMS Service. Please don't reply to this message. For more information go to http://emergencySMS.org.uk`)
+                  .then(() => {
+                    res.send(200)
+                    next()
+                  })
+                  .catch(error => console.log(error))
+              })
+              .catch(error => console.log(error))
           }
         })
       break
@@ -82,7 +86,7 @@ const send999Sms = (mobileNumber, message) => {
   return new Promise((resolve, reject) => {
     request.post(`https://api.clockworksms.com/http/send.aspx?key=${process.env.CLOCKWORK_API_KEY}&to=${mobileNumber}&content=${message}`)
           .then(resolve)
-            .catch(reject)
+          .catch(reject)
   })
 }
 

@@ -45,7 +45,8 @@ var journeySchema = _mongoose2.default.Schema({
       required: true
     }
   }],
-  lastMessageSent: Date
+  lastMessageSent: Date,
+  reference: Number
 });
 
 var Journey = _mongoose2.default.model('Journey', journeySchema);

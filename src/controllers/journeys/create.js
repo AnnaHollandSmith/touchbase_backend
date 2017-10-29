@@ -17,15 +17,20 @@ const create = (req, res, next) => {
       .then(etaDate => {
         req.body.eta = etaDate
 
-        const journey = new Journey(req.body)
+        Journey.find({}).exec()
+          .then((journeys) => journeys.length)
+          .then(journeysLength => {
+            req.body.reference = journeysLength + 1
+            const journey = new Journey(req.body)
 
-        journey.save((error, savedJourney) => {
-          if (error) {
-            return next(new errors.BadGatewayError(`Couldn't save to database.`))
-          }
+            journey.save((error, savedJourney) => {
+              if (error) {
+                return next(new errors.BadGatewayError(`Couldn't save to database.`))
+              }
 
-          res.send(savedJourney)
-        })
+              res.send(savedJourney)
+            })
+          })
       })
       .catch(error => res.send(new Error(error)))
   })

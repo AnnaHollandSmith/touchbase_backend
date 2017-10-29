@@ -44,14 +44,19 @@ var create = function create(req, res, next) {
     }).then(function (etaDate) {
       req.body.eta = etaDate;
 
-      var journey = new _Journey2.default(req.body);
+      _Journey2.default.find({}).exec().then(function (journeys) {
+        return journeys.length;
+      }).then(function (journeysLength) {
+        req.body.reference = journeysLength + 1;
+        var journey = new _Journey2.default(req.body);
 
-      journey.save(function (error, savedJourney) {
-        if (error) {
-          return next(new errors.BadGatewayError('Couldn\'t save to database.'));
-        }
+        journey.save(function (error, savedJourney) {
+          if (error) {
+            return next(new errors.BadGatewayError('Couldn\'t save to database.'));
+          }
 
-        res.send(savedJourney);
+          res.send(savedJourney);
+        });
       });
     }).catch(function (error) {
       return res.send(new Error(error));

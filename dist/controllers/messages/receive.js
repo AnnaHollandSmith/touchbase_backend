@@ -66,14 +66,20 @@ var receive = function receive(req, res, next) {
             send999Sms(from, 'Your telephone number is registered with the emergencySMS Service. Please don\'t reply to this message. For more information go to http://emergencySMS.org.uk').then(function () {
               res.send(200);
               next();
+            }).catch(function (error) {
+              return console.log(error);
             });
           });
         } else {
-          _Config2.default.update({ _id: configVar._id, key: 'is999Registered' }, { $set: { value: true } });
-
-          send999Sms(from, 'Your telephone number is registered with the emergencySMS Service. Please don\'t reply to this message. For more information go to http://emergencySMS.org.uk').then(function () {
-            res.send(200);
-            next();
+          _Config2.default.update({ _id: configVar._id, key: 'is999Registered' }, { $set: { value: true } }).then(function () {
+            send999Sms(from, 'Your telephone number is registered with the emergencySMS Service. Please don\'t reply to this message. For more information go to http://emergencySMS.org.uk').then(function () {
+              res.send(200);
+              next();
+            }).catch(function (error) {
+              return console.log(error);
+            });
+          }).catch(function (error) {
+            return console.log(error);
           });
         }
       });
