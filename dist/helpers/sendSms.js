@@ -24,8 +24,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function createMessage(messageType, fields, additional) {
   var messages = {
-    extension: 'Hi ' + fields.name + ', we\'ve noticed you haven\'t yet touched base at your destination. To add 5 minutes to your journey, text EXTEND to 84433.',
-    extensionReply: 'Hi ' + fields.name + ', we\'ve extended your journey time by 5 minutes. Your new ETA is ' + (0, _moment2.default)(additional.eta).format('HH:mm') + '.'
+    extension: 'Hi ' + fields.name + ', we\'ve noticed you haven\'t yet touched base at your destination. To add 5 minutes to your journey, text TOUCHBASE EXTEND to 84433. If you have arrived text TOUCHBASE HOME to 84433',
+    extensionReply: 'Hi ' + fields.name + ', we\'ve extended your journey time by 5 minutes. Your new ETA is ' + (0, _moment2.default)(additional.eta).format('HH:mm') + '.',
+    terminateReply: 'Thanks ' + fields.name + '. Glad you have made it home safely.'
   };
 
   return messages[messageType];

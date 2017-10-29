@@ -23,6 +23,16 @@ var receive = function receive(req, res, next) {
         next();
       });
       break;
+    case 'home':
+      console.log('home');
+      (0, _helpers.terminateJourney)(from).then(function (response) {
+        res.send(200);
+        next();
+      }).catch(function (error) {
+        res.send(error);
+        next();
+      });
+      break;
     default:
       console.log('unhandled');
       res.send('unhandled');

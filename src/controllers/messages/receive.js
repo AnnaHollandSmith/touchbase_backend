@@ -1,4 +1,4 @@
-import { extendJourney } from '../../helpers'
+import { extendJourney, terminateJourney } from '../../helpers'
 
 const receive = (req, res, next) => {
   const from = req.params.from
@@ -18,6 +18,18 @@ const receive = (req, res, next) => {
           res.send(error)
           next()
         })
+      break
+    case 'home':
+      console.log('home')
+      terminateJourney(from)
+          .then(response => {
+            res.send(200)
+            next()
+          })
+          .catch(error => {
+            res.send(error)
+            next()
+          })
       break
     default:
       console.log('unhandled')
