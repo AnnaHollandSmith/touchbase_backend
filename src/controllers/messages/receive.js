@@ -1,4 +1,3 @@
-import request from 'request-promise'
 import { extendJourney, terminateJourney } from '../../helpers'
 import Config from '../../models/Config'
 import Journey from '../../models/Journey'
@@ -26,6 +25,7 @@ const receive = (req, res, next) => {
           })
       })
   } else {
+    console.log('content var:' + content)
     switch (content) {
       case 'extend':
         console.log('extend')
@@ -93,14 +93,14 @@ const receive = (req, res, next) => {
                 next()
               })
           })
-
         break
       default:
         if (content.includes('Police.')) {
           console.log('EMERGENCY REQUEST RECEIVED:' + content)
+          res.send(200)
         } else {
           console.log('unhandled')
-          res.send('unhandled')
+          res.send(200)
         }
     }
   }

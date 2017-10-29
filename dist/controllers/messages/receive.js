@@ -4,10 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _requestPromise = require('request-promise');
-
-var _requestPromise2 = _interopRequireDefault(_requestPromise);
-
 var _helpers = require('../../helpers');
 
 var _Config = require('../../models/Config');
@@ -44,6 +40,7 @@ var receive = function receive(req, res, next) {
       });
     });
   } else {
+    console.log('content var:' + content);
     switch (content) {
       case 'extend':
         console.log('extend');
@@ -102,14 +99,14 @@ var receive = function receive(req, res, next) {
             next();
           });
         });
-
         break;
       default:
         if (content.includes('Police.')) {
           console.log('EMERGENCY REQUEST RECEIVED:' + content);
+          res.send(200);
         } else {
           console.log('unhandled');
-          res.send('unhandled');
+          res.send(200);
         }
     }
   }
