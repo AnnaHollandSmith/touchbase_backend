@@ -24,7 +24,7 @@ var receive = function receive(req, res, next) {
   var from = req.params.from;
   var content = decodeURI(req.params.content);
 
-  content = content.replace('TOUCHBASE ', '').toLowerCase();
+  content = content.replace('TBS ', '').toLowerCase();
 
   if (content.includes('escalate')) {
     console.log('escalate');

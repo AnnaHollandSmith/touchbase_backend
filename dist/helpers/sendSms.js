@@ -24,7 +24,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function createMessage(messageType, fields, additional) {
   var messages = {
-    extension: 'Hi ' + fields.name + ', we\'ve noticed you haven\'t yet touched base at your destination. To add 5 minutes to your journey, text TOUCHBASE EXTEND to 84433. If you have arrived text TOUCHBASE HOME to 84433',
+    extension: 'Hi ' + fields.name + ', we\'ve noticed you haven\'t yet touched base at your destination. To add 5 minutes to your journey, text TBS EXTEND to 84433. If you have arrived text TBS HOME to 84433',
     extensionReply: 'Hi ' + fields.name + ', we\'ve extended your journey time by 5 minutes. Your new ETA is ' + (0, _moment2.default)(additional.eta).format('HH:mm') + '.',
     terminateReply: 'Thanks ' + fields.name + '. Glad you have made it home safely.',
     contact: 'Hi ' + fields.name + ', ' + additional.name + ' is using the TouchBase app to get home safely. They have not marked their journey as complete. Please try and contact them on ' + additional.mobileNumber + '.',
@@ -38,7 +38,7 @@ function createMessage(messageType, fields, additional) {
 
 function getAppMessage(messageType, fields, additional) {
   var messages = {
-    extension: 'We\'ve noticed you haven\'t yet touched base at your destination. To add 5 minutes to your journey, text TOUCHBASE EXTEND to 84433. If you have arrived text TOUCHBASE HOME to 84433',
+    extension: 'We\'ve noticed you haven\'t yet touched base at your destination. To add 5 minutes to your journey, text TBS EXTEND to 84433. If you have arrived text TBS HOME to 84433',
     extensionReply: 'We\'ve extended your journey time by 5 minutes. Your new ETA is ' + (0, _moment2.default)(additional.eta).format('HH:mm') + '.',
     terminateReply: 'Thanks ' + fields.name + '. Glad you have made it home safely.',
     contact: additional.name + ' is using the TouchBase app to get home safely. They have not marked their journey as complete. Please try and contact them on ' + additional.mobileNumber + '.',
