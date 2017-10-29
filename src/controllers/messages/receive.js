@@ -44,17 +44,32 @@ const receive = (req, res, next) => {
     case 'yes':
       Config.findOne({ key: 'is999Registered' })
         .then(configVar => {
-          if (!configVar) {
-            const newConfig = new Config({
-              key: 'is999Registered',
-              value: true
-            })
+          const registerPromise = new Promise((resolve, reject) => {
+            if (!configVar) {
+              const newConfig = new Config({
+                key: 'is999Registered',
+                value: true
+              })
 
-            newConfig.save((error, savedConfigVar) => {
-              if (error) {
-                throw new Error(error)
-              }
+              newConfig.save((error, savedConfigVar) => {
+                if (error) {
+                  console.log(error)
+                  reject(error)
+                }
 
+                resolve()
+              })
+            } else {
+              Config.update({ _id: configVar._id, key: 'is999Registered' }, { $set: { value: true } })
+              .then(() => {
+                resolve()
+              })
+              .catch(reject)
+            }
+          })
+
+          registerPromise
+            .then(() => {
               send999Sms(from, `Your telephone number is registered with the emergencySMS Service. Please don't reply to this message. For more information go to http://emergencySMS.org.uk`)
                 .then(() => {
                   res.send(200)
@@ -62,19 +77,8 @@ const receive = (req, res, next) => {
                 })
                 .catch(error => console.log(error))
             })
-          } else {
-            Config.update({ _id: configVar._id, key: 'is999Registered' }, { $set: { value: true } })
-              .then(() => {
-                send999Sms(from, `Your telephone number is registered with the emergencySMS Service. Please don't reply to this message. For more information go to http://emergencySMS.org.uk`)
-                  .then(() => {
-                    res.send(200)
-                    next()
-                  })
-                  .catch(error => console.log(error))
-              })
-              .catch(error => console.log(error))
-          }
         })
+
       break
     default:
       console.log('unhandled')

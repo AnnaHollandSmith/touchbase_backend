@@ -52,37 +52,38 @@ var receive = function receive(req, res, next) {
       break;
     case 'yes':
       _Config2.default.findOne({ key: 'is999Registered' }).then(function (configVar) {
-        if (!configVar) {
-          var newConfig = new _Config2.default({
-            key: 'is999Registered',
-            value: true
-          });
-
-          newConfig.save(function (error, savedConfigVar) {
-            if (error) {
-              throw new Error(error);
-            }
-
-            send999Sms(from, 'Your telephone number is registered with the emergencySMS Service. Please don\'t reply to this message. For more information go to http://emergencySMS.org.uk').then(function () {
-              res.send(200);
-              next();
-            }).catch(function (error) {
-              return console.log(error);
+        var registerPromise = new Promise(function (resolve, reject) {
+          if (!configVar) {
+            var newConfig = new _Config2.default({
+              key: 'is999Registered',
+              value: true
             });
-          });
-        } else {
-          _Config2.default.update({ _id: configVar._id, key: 'is999Registered' }, { $set: { value: true } }).then(function () {
-            send999Sms(from, 'Your telephone number is registered with the emergencySMS Service. Please don\'t reply to this message. For more information go to http://emergencySMS.org.uk').then(function () {
-              res.send(200);
-              next();
-            }).catch(function (error) {
-              return console.log(error);
+
+            newConfig.save(function (error, savedConfigVar) {
+              if (error) {
+                console.log(error);
+                reject(error);
+              }
+
+              resolve();
             });
+          } else {
+            _Config2.default.update({ _id: configVar._id, key: 'is999Registered' }, { $set: { value: true } }).then(function () {
+              resolve();
+            }).catch(reject);
+          }
+        });
+
+        registerPromise.then(function () {
+          send999Sms(from, 'Your telephone number is registered with the emergencySMS Service. Please don\'t reply to this message. For more information go to http://emergencySMS.org.uk').then(function () {
+            res.send(200);
+            next();
           }).catch(function (error) {
             return console.log(error);
           });
-        }
+        });
       });
+
       break;
     default:
       console.log('unhandled');
