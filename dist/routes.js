@@ -17,6 +17,8 @@ var routes = function routes(server) {
 
   server.post('/journeys', _controllers.journeyControllers.create);
 
+  server.get('/journeys/:mobileNumber', _controllers.journeyControllers.find);
+
   server.post('/receivemessage/', _controllers.messageControllers.receive);
 };
 
