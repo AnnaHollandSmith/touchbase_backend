@@ -33,42 +33,42 @@ var cron = function cron() {
 
   _nodeSchedule2.default.scheduleJob('*/1 * * * *', function extendSms() {
     console.log('executing extend sms cron');
-    var messageThreshold = (0, _moment2.default)().subtract(5, 'minutes').toDate();
     var selector = {
-      'end': { $exists: false },
-      'eta': { $gte: messageThreshold }
+      'end': { $exists: false }
     };
 
     _Journey2.default.find(selector).exec().then(function (journeys) {
       journeys.forEach(function (journey) {
-        var mobileNumber = journey.mobileNumber;
+        var now = new Date();
+
+        if ((0, _moment2.default)(now).diff((0, _moment2.default)(journey.eta), 'minutes') <= 5) {
+          var mobileNumber = journey.mobileNumber;
 
 
-        _User2.default.findOne({ mobileNumber: mobileNumber }).then(function (user) {
-          if (!user) {
-            return;
-          }
+          _User2.default.findOne({ mobileNumber: mobileNumber }).then(function (user) {
+            if (!user) {
+              return;
+            }
 
-          _Message2.default.findOne({ mobileNumber: mobileNumber }, { createdAt: -1 }).then(function (message) {
-            var now = new Date();
-
-            if (!message || (0, _moment2.default)(now).diff((0, _moment2.default)(message.date), 'minutes') >= 5) {
-              (0, _helpers.sendSms)(user, 'extension').then(function (response) {
-                _Journey2.default.update({ _id: journey._id }, {
-                  $set: { messageSent: true }
-                }).then(function (response) {
-                  return console.log(response);
+            _Message2.default.findOne({ mobileNumber: mobileNumber }, { createdAt: -1 }).then(function (message) {
+              if (!message || (0, _moment2.default)(now).diff((0, _moment2.default)(message.date), 'minutes') >= 5) {
+                (0, _helpers.sendSms)(user, 'extension').then(function (response) {
+                  _Journey2.default.update({ _id: journey._id }, {
+                    $set: { messageSent: true }
+                  }).then(function (response) {
+                    return console.log(response);
+                  }).catch(function (error) {
+                    return console.log(error);
+                  });
                 }).catch(function (error) {
                   return console.log(error);
                 });
-              }).catch(function (error) {
-                return console.log(error);
-              });
-            }
-          }).catch(function (error) {
-            return console.log(error);
+              }
+            }).catch(function (error) {
+              return console.log(error);
+            });
           });
-        });
+        }
       });
     });
   });

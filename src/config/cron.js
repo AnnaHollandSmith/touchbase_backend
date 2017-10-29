@@ -10,18 +10,19 @@ const cron = () => {
 
   nodeSchedule.scheduleJob('*/1 * * * *', function extendSms () {
     console.log('executing extend sms cron')
-    const messageThreshold = moment().subtract(5, 'minutes').toDate()
     const selector = {
-      'end': { $exists: false },
-      'eta': { $gte: messageThreshold }
+      'end': { $exists: false }
     }
 
     Journey.find(selector).exec()
       .then(journeys => {
         journeys.forEach(journey => {
-          const { mobileNumber } = journey
+          const now = new Date()
 
-          User.findOne({ mobileNumber })
+          if (moment(now).diff(moment(journey.eta), 'minutes') <= 5) {
+            const { mobileNumber } = journey
+
+            User.findOne({ mobileNumber })
             .then(user => {
               if (!user) {
                 return
@@ -29,8 +30,6 @@ const cron = () => {
 
               Message.findOne({ mobileNumber }, { createdAt: -1 })
                 .then(message => {
-                  const now = new Date()
-
                   if (!message || moment(now).diff(moment(message.date), 'minutes') >= 5) {
                     sendSms(user, 'extension')
                       .then(response => {
@@ -45,6 +44,7 @@ const cron = () => {
                 })
                 .catch(error => console.log(error))
             })
+          }
         })
       })
   })
