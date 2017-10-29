@@ -2,6 +2,7 @@ import request from 'request-promise'
 import { extendJourney, terminateJourney } from '../../helpers'
 import Config from '../../models/Config'
 import Journey from '../../models/Journey'
+import sendSms from '../../helpers/sendSms'
 
 const receive = (req, res, next) => {
   const from = req.params.from
@@ -14,11 +15,9 @@ const receive = (req, res, next) => {
 
     Journey.findOne({reference})
       .then(journey => {
-        send999Sms(process.env.NUMBER, `${process.env.KEYWORD}Police. Person Reported Missing. Last seen ${journey.start}. Mobile number ${journey.mobileNumber}. Last known coordinates ${journey.origin.lat}, ${journey.origin.lng}. Heading towards ${journey.destination.lat}, ${journey.destination.lng}`)
-          .then(() => {
-            res.send(200)
-            next()
-          })
+        sendSms(process.env.NUMBER, 'escalate')
+        res.send(200)
+        next()
       })
   } else {
     switch (content) {
@@ -48,11 +47,9 @@ const receive = (req, res, next) => {
         break
       case 'register':
         console.log('register')
-        send999Sms(from, `After reading ALL this message, SEND THE WORD '${process.env.KEYWORD}YES' TO ${process.env.NUMBER} TO COMPLETE YOUR REGISTRATION - otherwise your phone isn't registered. In an emergency, you will know your message has been received ONLY when you get a reply from an emergency service; until then try other methods. Full details, Terms & Conditions are available at www.emergencysms.org.uk`)
-          .then(() => {
-            res.send(200)
-            next()
-          })
+        sendSms(process.env.NUMBER, 'register')
+        res.send(200)
+        next()
         break
       case 'yes':
         Config.findOne({ key: 'is999Registered' })
@@ -83,12 +80,9 @@ const receive = (req, res, next) => {
 
             registerPromise
               .then(() => {
-                send999Sms(from, `Your telephone number is registered with the emergencySMS Service. Please don't reply to this message. For more information go to http://emergencySMS.org.uk`)
-                  .then(() => {
-                    res.send(200)
-                    next()
-                  })
-                  .catch(error => console.log(error))
+                sendSms(process.env.NUMBER, 'registered')
+                res.send(200)
+                next()
               })
           })
 
@@ -102,14 +96,6 @@ const receive = (req, res, next) => {
         }
     }
   }
-}
-
-const send999Sms = (mobileNumber, message) => {
-  return new Promise((resolve, reject) => {
-    request.post(`https://api.clockworksms.com/http/send.aspx?key=${process.env.CLOCKWORK_API_KEY}&to=${mobileNumber}&content=${message}`)
-      .then(success => resolve(success))
-      .catch(error => reject(error))
-  })
 }
 
 export default receive
