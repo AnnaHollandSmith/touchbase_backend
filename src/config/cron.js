@@ -8,10 +8,14 @@ import { sendSms } from '../helpers'
 const cron = () => {
   console.log('crons initialised')
 
-  nodeSchedule.scheduleJob('*/1 * * * *', function extendSms () {
+  function extendSms () {
     console.log('executing extend sms cron')
+
+    const fiveMinutesAgo = moment().subtract(5, 'minutes').toDate()
+
     const selector = {
-      'end': { $exists: false }
+      'end': { $exists: false },
+      'eta': { $lte: new Date(), $gte: fiveMinutesAgo }
     }
 
     Journey.find(selector).exec()
@@ -28,18 +32,10 @@ const cron = () => {
                 return
               }
 
-              Message.findOne({ mobileNumber }, { createdAt: -1 })
+              Message.findOne({ mobileNumber, type: 'extension' }, { createdAt: -1 })
                 .then(message => {
                   if (!message || moment(now).diff(moment(message.date), 'minutes') >= 5) {
                     sendSms(user, 'extension')
-                      .then(response => {
-                        Journey.update({ _id: journey._id }, {
-                          $set: { messageSent: true }
-                        })
-                        .then(response => console.log(response))
-                        .catch(error => console.log(error))
-                      })
-                      .catch(error => console.log(error))
                   }
                 })
                 .catch(error => console.log(error))
@@ -47,6 +43,47 @@ const cron = () => {
           }
         })
       })
+  }
+
+  function contactsSms () {
+    console.log('executing contact sms cron')
+    const selector = {
+      'end': { $exists: false },
+      'eta': { $gte: new Date() }
+    }
+
+    Journey.find(selector).exec()
+      .then(journeys => {
+        journeys.forEach(journey => {
+          const { mobileNumber } = journey
+
+          User.findOne({ mobileNumber })
+            .then(user => {
+              if (!user) {
+                return
+              }
+
+              journey.contacts.forEach(contact => {
+                Message.findOne({ mobileNumber, type: 'contact' }, { createdAt: -1 })
+                  .then(message => {
+                    if (!message) {
+                      sendSms(contact, 'contact', {
+                        name: user.name,
+                        mobileNumber
+                      })
+                    }
+                  })
+                  .catch(error => console.log(error))
+              })
+            })
+        })
+      })
+      .catch()
+  }
+
+  nodeSchedule.scheduleJob('*/1 * * * *', () => {
+    extendSms()
+    contactsSms()
   })
 }
 

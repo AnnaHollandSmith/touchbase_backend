@@ -31,10 +31,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var cron = function cron() {
   console.log('crons initialised');
 
-  _nodeSchedule2.default.scheduleJob('*/1 * * * *', function extendSms() {
+  function extendSms() {
     console.log('executing extend sms cron');
+
+    var fiveMinutesAgo = (0, _moment2.default)().subtract(5, 'minutes').toDate();
+
     var selector = {
-      'end': { $exists: false }
+      'end': { $exists: false },
+      'eta': { $lte: new Date(), $gte: fiveMinutesAgo }
     };
 
     _Journey2.default.find(selector).exec().then(function (journeys) {
@@ -50,19 +54,9 @@ var cron = function cron() {
               return;
             }
 
-            _Message2.default.findOne({ mobileNumber: mobileNumber }, { createdAt: -1 }).then(function (message) {
+            _Message2.default.findOne({ mobileNumber: mobileNumber, type: 'extension' }, { createdAt: -1 }).then(function (message) {
               if (!message || (0, _moment2.default)(now).diff((0, _moment2.default)(message.date), 'minutes') >= 5) {
-                (0, _helpers.sendSms)(user, 'extension').then(function (response) {
-                  _Journey2.default.update({ _id: journey._id }, {
-                    $set: { messageSent: true }
-                  }).then(function (response) {
-                    return console.log(response);
-                  }).catch(function (error) {
-                    return console.log(error);
-                  });
-                }).catch(function (error) {
-                  return console.log(error);
-                });
+                (0, _helpers.sendSms)(user, 'extension');
               }
             }).catch(function (error) {
               return console.log(error);
@@ -71,6 +65,45 @@ var cron = function cron() {
         }
       });
     });
+  }
+
+  function contactsSms() {
+    console.log('executing contact sms cron');
+    var selector = {
+      'end': { $exists: false },
+      'eta': { $gte: new Date() }
+    };
+
+    _Journey2.default.find(selector).exec().then(function (journeys) {
+      journeys.forEach(function (journey) {
+        var mobileNumber = journey.mobileNumber;
+
+
+        _User2.default.findOne({ mobileNumber: mobileNumber }).then(function (user) {
+          if (!user) {
+            return;
+          }
+
+          journey.contacts.forEach(function (contact) {
+            _Message2.default.findOne({ mobileNumber: mobileNumber, type: 'contact' }, { createdAt: -1 }).then(function (message) {
+              if (!message) {
+                (0, _helpers.sendSms)(contact, 'contact', {
+                  name: user.name,
+                  mobileNumber: mobileNumber
+                });
+              }
+            }).catch(function (error) {
+              return console.log(error);
+            });
+          });
+        });
+      });
+    }).catch();
+  }
+
+  _nodeSchedule2.default.scheduleJob('*/1 * * * *', function () {
+    extendSms();
+    contactsSms();
   });
 };
 
