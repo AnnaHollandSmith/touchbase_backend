@@ -18,20 +18,18 @@ var receive = function receive(req, res, next) {
       (0, _helpers.extendJourney)(from).then(function (response) {
         res.send(200);
         next();
-      }).catch(function (error) {
-        res.send(error);
+      }).catch(function () {
+        res.send(200);
         next();
       });
       break;
     case 'home':
       console.log('home');
       (0, _helpers.terminateJourney)(from).then(function (response) {
-        console.log(response);
         res.send(200);
         next();
-      }).catch(function (error) {
-        console.log(error);
-        res.send(error);
+      }).catch(function () {
+        res.send(200);
         next();
       });
       break;

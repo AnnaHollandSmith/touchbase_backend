@@ -14,8 +14,8 @@ const receive = (req, res, next) => {
           res.send(200)
           next()
         })
-        .catch(error => {
-          res.send(error)
+        .catch(() => {
+          res.send(200)
           next()
         })
       break
@@ -23,13 +23,11 @@ const receive = (req, res, next) => {
       console.log('home')
       terminateJourney(from)
           .then(response => {
-            console.log(response)
             res.send(200)
             next()
           })
-          .catch(error => {
-            console.log(error)
-            res.send(error)
+          .catch(() => {
+            res.send(200)
             next()
           })
       break
