@@ -65,7 +65,7 @@ const cron = () => {
                 }
 
                 journey.contacts.forEach(contact => {
-                  Message.findOne({ mobileNumber, type: 'contact' }, { createdAt: -1 })
+                  Message.findOne({ mobileNumber: contact.mobileNumber, type: 'contact' }, { createdAt: -1 })
                     .then(message => {
                       if (!message) {
                         sendSms(contact, 'contact', {

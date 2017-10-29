@@ -86,7 +86,7 @@ var cron = function cron() {
             }
 
             journey.contacts.forEach(function (contact) {
-              _Message2.default.findOne({ mobileNumber: mobileNumber, type: 'contact' }, { createdAt: -1 }).then(function (message) {
+              _Message2.default.findOne({ mobileNumber: contact.mobileNumber, type: 'contact' }, { createdAt: -1 }).then(function (message) {
                 if (!message) {
                   (0, _helpers.sendSms)(contact, 'contact', {
                     name: user.name,
