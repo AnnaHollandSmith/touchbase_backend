@@ -18,13 +18,18 @@ var terminateJourney = function terminateJourney(mobileNumber) {
       end: { $exists: false },
       mobileNumber: mobileNumber
     }).then(function (journey) {
+      console.log(journey);
       if (!journey) {
         throw new Error('Journey not found');
       }
       _Journey2.default.update({ _id: journey._id }, { $set: { end: new Date() } }).then(function (success) {
+        console.log(success);
         (0, _helpers.sendSms)(journey.mobileNumber, 'terminateReply');
         resolve();
-      }).catch(reject);
+      }).catch(function (error) {
+        console.log(error);
+        reject(error);
+      });
     }).catch(function (error) {
       return reject(error);
     });

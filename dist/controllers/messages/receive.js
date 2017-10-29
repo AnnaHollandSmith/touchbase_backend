@@ -26,9 +26,11 @@ var receive = function receive(req, res, next) {
     case 'home':
       console.log('home');
       (0, _helpers.terminateJourney)(from).then(function (response) {
+        console.log(response);
         res.send(200);
         next();
       }).catch(function (error) {
+        console.log(error);
         res.send(error);
         next();
       });

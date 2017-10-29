@@ -8,15 +8,20 @@ const terminateJourney = mobileNumber => {
       mobileNumber
     })
     .then(journey => {
+      console.log(journey)
       if (!journey) {
         throw new Error('Journey not found')
       }
       Journey.update({_id: journey._id}, {$set: {end: new Date()}})
         .then(success => {
+          console.log(success)
           sendSms(journey.mobileNumber, 'terminateReply')
           resolve()
         })
-        .catch(reject)
+        .catch(error => {
+          console.log(error)
+          reject(error)
+        })
     })
     .catch(error => reject(error))
   })

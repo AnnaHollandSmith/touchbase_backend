@@ -23,10 +23,12 @@ const receive = (req, res, next) => {
       console.log('home')
       terminateJourney(from)
           .then(response => {
+            console.log(response)
             res.send(200)
             next()
           })
           .catch(error => {
+            console.log(error)
             res.send(error)
             next()
           })
