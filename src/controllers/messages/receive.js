@@ -1,4 +1,4 @@
-import request from 'request'
+import request from 'request-promise'
 import { extendJourney, terminateJourney } from '../../helpers'
 import Config from '../../models/Config'
 
