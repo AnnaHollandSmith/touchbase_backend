@@ -2,6 +2,7 @@ import nodeSchedule from 'node-schedule'
 import moment from 'moment'
 import Journey from '../models/Journey'
 import User from '../models/User'
+import Message from '../models/Message'
 import { sendSms } from '../helpers'
 
 const cron = () => {
@@ -12,32 +13,35 @@ const cron = () => {
     const messageThreshold = moment().subtract(5, 'minutes').toDate()
     const selector = {
       'end': { $exists: false },
-      'eta': { $gte: messageThreshold },
-      $or: [
-        {
-          lastMessageSent: { $gte: messageThreshold }
-        }, {
-          lastMessageSent: { $exists: false }
-        }
-      ]
+      'eta': { $gte: messageThreshold }
     }
 
     Journey.find(selector).exec()
       .then(journeys => {
         journeys.forEach(journey => {
-          User.findOne({ mobileNumber: journey.mobileNumber })
+          const { mobileNumber } = journey
+
+          User.findOne({ mobileNumber })
             .then(user => {
               if (!user) {
                 return
               }
 
-              sendSms(user, 'extension')
-                .then(response => {
-                  Journey.update({ _id: journey._id }, {
-                    $set: { lastMessageSent: new Date() }
-                  })
-                  .then(response => console.log(response))
-                  .catch(error => console.log(error))
+              Message.findOne({ mobileNumber }, { createdAt: -1 })
+                .then(message => {
+                  const now = new Date()
+
+                  if (!message || moment(now).diff(moment(message.date), 'minutes') >= 5) {
+                    sendSms(user, 'extension')
+                      .then(response => {
+                        Journey.update({ _id: journey._id }, {
+                          $set: { messageSent: true }
+                        })
+                        .then(response => console.log(response))
+                        .catch(error => console.log(error))
+                      })
+                      .catch(error => console.log(error))
+                  }
                 })
                 .catch(error => console.log(error))
             })

@@ -20,6 +20,10 @@ var _User = require('../models/User');
 
 var _User2 = _interopRequireDefault(_User);
 
+var _Message = require('../models/Message');
+
+var _Message2 = _interopRequireDefault(_Message);
+
 var _helpers = require('../helpers');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -32,29 +36,35 @@ var cron = function cron() {
     var messageThreshold = (0, _moment2.default)().subtract(5, 'minutes').toDate();
     var selector = {
       'end': { $exists: false },
-      'eta': { $gte: messageThreshold },
-      $or: [{
-        lastMessageSent: { $gte: messageThreshold }
-      }, {
-        lastMessageSent: { $exists: false }
-      }]
+      'eta': { $gte: messageThreshold }
     };
 
     _Journey2.default.find(selector).exec().then(function (journeys) {
       journeys.forEach(function (journey) {
-        _User2.default.findOne({ mobileNumber: journey.mobileNumber }).then(function (user) {
+        var mobileNumber = journey.mobileNumber;
+
+
+        _User2.default.findOne({ mobileNumber: mobileNumber }).then(function (user) {
           if (!user) {
             return;
           }
 
-          (0, _helpers.sendSms)(user, 'extension').then(function (response) {
-            _Journey2.default.update({ _id: journey._id }, {
-              $set: { lastMessageSent: new Date() }
-            }).then(function (response) {
-              return console.log(response);
-            }).catch(function (error) {
-              return console.log(error);
-            });
+          _Message2.default.findOne({ mobileNumber: mobileNumber }, { createdAt: -1 }).then(function (message) {
+            var now = new Date();
+
+            if (!message || (0, _moment2.default)(now).diff((0, _moment2.default)(message.date), 'minutes') >= 5) {
+              (0, _helpers.sendSms)(user, 'extension').then(function (response) {
+                _Journey2.default.update({ _id: journey._id }, {
+                  $set: { messageSent: true }
+                }).then(function (response) {
+                  return console.log(response);
+                }).catch(function (error) {
+                  return console.log(error);
+                });
+              }).catch(function (error) {
+                return console.log(error);
+              });
+            }
           }).catch(function (error) {
             return console.log(error);
           });

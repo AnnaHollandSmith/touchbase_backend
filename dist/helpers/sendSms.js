@@ -12,6 +12,10 @@ var _User = require('../models/User');
 
 var _User2 = _interopRequireDefault(_User);
 
+var _Message = require('../models/Message');
+
+var _Message2 = _interopRequireDefault(_Message);
+
 var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
@@ -50,8 +54,22 @@ var sendSms = function sendSms(contacts, messageType) {
       contacts.forEach(function (contact) {
         var content = createMessage(messageType, contact, additional);
 
-        _requestPromise2.default.post('https://api.clockworksms.com/http/send.aspx?key=' + process.env.CLOCKWORK_API_KEY + '&to=' + contact.mobileNumber + '&content=' + content).then(function (response) {
-          return resolve(response);
+        var mobileNumber = contact.mobileNumber;
+
+
+        _requestPromise2.default.post('https://api.clockworksms.com/http/send.aspx?key=' + process.env.CLOCKWORK_API_KEY + '&to=' + mobileNumber + '&content=' + content).then(function (response) {
+          var message = new _Message2.default({
+            mobileNumber: mobileNumber,
+            type: messageType
+          });
+
+          message.save(function (error, savedMessage) {
+            if (error) {
+              throw new Error(error);
+            }
+
+            resolve(response);
+          });
         }).catch(function (error) {
           return reject(new Error(error));
         });

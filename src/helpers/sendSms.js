@@ -1,5 +1,6 @@
 import request from 'request-promise'
 import User from '../models/User'
+import Message from '../models/Message'
 import moment from 'moment'
 
 function createMessage (messageType, fields, additional) {
@@ -33,8 +34,23 @@ const sendSms = (contacts, messageType, additional = {}) => {
       contacts.forEach(contact => {
         const content = createMessage(messageType, contact, additional)
 
-        request.post(`https://api.clockworksms.com/http/send.aspx?key=${process.env.CLOCKWORK_API_KEY}&to=${contact.mobileNumber}&content=${content}`)
-          .then(response => resolve(response))
+        const { mobileNumber } = contact
+
+        request.post(`https://api.clockworksms.com/http/send.aspx?key=${process.env.CLOCKWORK_API_KEY}&to=${mobileNumber}&content=${content}`)
+          .then(response => {
+            const message = new Message({
+              mobileNumber,
+              type: messageType
+            })
+
+            message.save((error, savedMessage) => {
+              if (error) {
+                throw new Error(error)
+              }
+
+              resolve(response)
+            })
+          })
           .catch(error => reject(new Error(error)))
       })
     })
