@@ -71,32 +71,34 @@ var cron = function cron() {
     console.log('executing contact sms cron');
     var selector = {
       'end': { $exists: false },
-      'eta': { $gte: new Date() }
+      'eta': { $lte: new Date() }
     };
 
     _Journey2.default.find(selector).exec().then(function (journeys) {
       journeys.forEach(function (journey) {
-        var mobileNumber = journey.mobileNumber;
+        if ((0, _moment2.default)().toDate() > (0, _moment2.default)(journey.eta).toDate()) {
+          var mobileNumber = journey.mobileNumber;
 
 
-        _User2.default.findOne({ mobileNumber: mobileNumber }).then(function (user) {
-          if (!user) {
-            return;
-          }
+          _User2.default.findOne({ mobileNumber: mobileNumber }).then(function (user) {
+            if (!user) {
+              return;
+            }
 
-          journey.contacts.forEach(function (contact) {
-            _Message2.default.findOne({ mobileNumber: mobileNumber, type: 'contact' }, { createdAt: -1 }).then(function (message) {
-              if (!message) {
-                (0, _helpers.sendSms)(contact, 'contact', {
-                  name: user.name,
-                  mobileNumber: mobileNumber
-                });
-              }
-            }).catch(function (error) {
-              return console.log(error);
+            journey.contacts.forEach(function (contact) {
+              _Message2.default.findOne({ mobileNumber: mobileNumber, type: 'contact' }, { createdAt: -1 }).then(function (message) {
+                if (!message) {
+                  (0, _helpers.sendSms)(contact, 'contact', {
+                    name: user.name,
+                    mobileNumber: mobileNumber
+                  });
+                }
+              }).catch(function (error) {
+                return console.log(error);
+              });
             });
           });
-        });
+        }
       });
     }).catch();
   }

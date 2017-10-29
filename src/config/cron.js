@@ -49,33 +49,35 @@ const cron = () => {
     console.log('executing contact sms cron')
     const selector = {
       'end': { $exists: false },
-      'eta': { $gte: new Date() }
+      'eta': { $lte: new Date() }
     }
 
     Journey.find(selector).exec()
       .then(journeys => {
         journeys.forEach(journey => {
-          const { mobileNumber } = journey
+          if (moment().toDate() > moment(journey.eta).toDate()) {
+            const { mobileNumber } = journey
 
-          User.findOne({ mobileNumber })
-            .then(user => {
-              if (!user) {
-                return
-              }
+            User.findOne({ mobileNumber })
+              .then(user => {
+                if (!user) {
+                  return
+                }
 
-              journey.contacts.forEach(contact => {
-                Message.findOne({ mobileNumber, type: 'contact' }, { createdAt: -1 })
-                  .then(message => {
-                    if (!message) {
-                      sendSms(contact, 'contact', {
-                        name: user.name,
-                        mobileNumber
-                      })
-                    }
-                  })
-                  .catch(error => console.log(error))
+                journey.contacts.forEach(contact => {
+                  Message.findOne({ mobileNumber, type: 'contact' }, { createdAt: -1 })
+                    .then(message => {
+                      if (!message) {
+                        sendSms(contact, 'contact', {
+                          name: user.name,
+                          mobileNumber
+                        })
+                      }
+                    })
+                    .catch(error => console.log(error))
+                })
               })
-            })
+          }
         })
       })
       .catch()
