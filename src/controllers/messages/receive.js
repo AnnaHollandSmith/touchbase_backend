@@ -15,7 +15,7 @@ const receive = (req, res, next) => {
 
     Journey.findOne({reference})
       .then(journey => {
-        sendSms(process.env.NUMBER, 'escalate')
+        sendSms(process.env.NUMBER, 'escalate', journey)
         res.send(200)
         next()
       })
