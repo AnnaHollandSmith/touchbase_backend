@@ -15,9 +15,9 @@ const cron = () => {
       'eta': { $gte: messageThreshold },
       $or: [
         {
-          'messages.extension.lastMessageSent': { $gte: messageThreshold }
+          lastMessageSent: { $gte: messageThreshold }
         }, {
-          'messages.extension.lastMessageSent': { $exists: false }
+          lastMessageSent: { $exists: false }
         }
       ]
     }
@@ -31,16 +31,10 @@ const cron = () => {
                 return
               }
 
-              const messages = {
-                extension: {
-                  lastMessageSent: new Date()
-                }
-              }
-
               sendSms(user, 'extension')
                 .then(response => {
                   Journey.update({ _id: journey._id }, {
-                    $set: { messages }
+                    $set: { lastMessageSent: new Date() }
                   })
                 })
             })

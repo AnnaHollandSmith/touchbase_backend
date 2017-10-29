@@ -34,9 +34,9 @@ var cron = function cron() {
       'end': { $exists: false },
       'eta': { $gte: messageThreshold },
       $or: [{
-        'messages.extension.lastMessageSent': { $gte: messageThreshold }
+        lastMessageSent: { $gte: messageThreshold }
       }, {
-        'messages.extension.lastMessageSent': { $exists: false }
+        lastMessageSent: { $exists: false }
       }]
     };
 
@@ -47,15 +47,9 @@ var cron = function cron() {
             return;
           }
 
-          var messages = {
-            extension: {
-              lastMessageSent: new Date()
-            }
-          };
-
           (0, _helpers.sendSms)(user, 'extension').then(function (response) {
             _Journey2.default.update({ _id: journey._id }, {
-              $set: { messages: messages }
+              $set: { lastMessageSent: new Date() }
             });
           });
         });

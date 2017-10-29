@@ -37,11 +37,7 @@ const journeySchema = mongoose.Schema({
       }
     }
   ],
-  messages: {
-    extension: {
-      lastMessageSent: Date
-    }
-  }
+  lastMessageSent: Date
 })
 
 const Journey = mongoose.model('Journey', journeySchema)
