@@ -49,5 +49,5 @@ server.use(function crossOrigin(req, res, next) {
 (0, _config.cron)();
 
 server.listen(port, function () {
-  console.log('Server is listening on port ' + port);
+  console.log('Server is listening on port ' + (process.env.PORT || port));
 });

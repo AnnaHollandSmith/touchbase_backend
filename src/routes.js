@@ -6,6 +6,8 @@ import {
   messageControllers
 } from './controllers'
 
+import receive from './controllers/receiveMessage'
+
 const routes = (server) => {
   server.get('/', homeControllers.main)
 
@@ -22,6 +24,8 @@ const routes = (server) => {
   server.get('/journeys/:mobileNumber', journeyControllers.find)
 
   server.post('/receivemessage/', messageControllers.receive)
+
+  server.post('/999', receive)
 }
 
 export default routes

@@ -32,5 +32,5 @@ routes(server)
 cron()
 
 server.listen(port, () => {
-  console.log(`Server is listening on port ${port}`)
+  console.log(`Server is listening on port ${process.env.PORT || port}`)
 })
