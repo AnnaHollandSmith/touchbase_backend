@@ -17,6 +17,8 @@ const routes = (server) => {
 
   server.post('/journeys', journeyControllers.create)
 
+  server.get('/journeys/:mobileNumber', journeyControllers.find)
+
   server.post('/receivemessage/', messageControllers.receive)
 }
 
