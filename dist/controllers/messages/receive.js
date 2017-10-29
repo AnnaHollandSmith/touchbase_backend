@@ -112,7 +112,11 @@ var receive = function receive(req, res, next) {
 
 var send999Sms = function send999Sms(mobileNumber, message) {
   return new Promise(function (resolve, reject) {
-    _requestPromise2.default.post('https://api.clockworksms.com/http/send.aspx?key=' + process.env.CLOCKWORK_API_KEY + '&to=' + mobileNumber + '&content=' + message).then(resolve).catch(reject);
+    _requestPromise2.default.post('https://api.clockworksms.com/http/send.aspx?key=' + process.env.CLOCKWORK_API_KEY + '&to=' + mobileNumber + '&content=' + message).then(function (success) {
+      return resolve(success);
+    }).catch(function (error) {
+      return reject(error);
+    });
   });
 };
 

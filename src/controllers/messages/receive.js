@@ -107,8 +107,8 @@ const receive = (req, res, next) => {
 const send999Sms = (mobileNumber, message) => {
   return new Promise((resolve, reject) => {
     request.post(`https://api.clockworksms.com/http/send.aspx?key=${process.env.CLOCKWORK_API_KEY}&to=${mobileNumber}&content=${message}`)
-      .then(resolve)
-      .catch(reject)
+      .then(success => resolve(success))
+      .catch(error => reject(error))
   })
 }
 
