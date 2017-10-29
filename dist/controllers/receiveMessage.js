@@ -8,6 +8,10 @@ var _requestPromise = require('request-promise');
 
 var _requestPromise2 = _interopRequireDefault(_requestPromise);
 
+var _Config = require('../models/Config');
+
+var _Config2 = _interopRequireDefault(_Config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var receive = function receive(req, res, next) {
@@ -25,9 +29,32 @@ var receive = function receive(req, res, next) {
       });
       break;
     case 'yes':
-      console.log('yes');
-      res.send(200);
-      next();
+      _Config2.default.findOne({ key: 'is999Registered' }).then(function (configVar) {
+        if (!configVar) {
+          var newConfig = new _Config2.default({
+            key: 'is999Registered',
+            value: true
+          });
+
+          newConfig.save(function (error, savedConfigVar) {
+            if (error) {
+              throw new Error(error);
+            }
+
+            sendSms(from, 'Your telephone number is registered with the emergencySMS Service. Please don\'t reply to this message. For more information go to http://emergencySMS.org.uk').then(function () {
+              res.send(200);
+              next();
+            });
+          });
+        } else {
+          _Config2.default.update({ _id: configVar._id, key: 'is999Registered' }, { $set: { value: true } });
+
+          sendSms(from, 'Your telephone number is registered with the emergencySMS Service. Please don\'t reply to this message. For more information go to http://emergencySMS.org.uk').then(function () {
+            res.send(200);
+            next();
+          });
+        }
+      });
       break;
     default:
       console.log('unhandled');
