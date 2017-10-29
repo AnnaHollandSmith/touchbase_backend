@@ -31,10 +31,16 @@ const cron = () => {
                 return
               }
 
+              const messages = {
+                extension: {
+                  lastMessageSent: new Date()
+                }
+              }
+
               sendSms(user, 'extension')
                 .then(response => {
                   Journey.update({ _id: journey._id }, {
-                    $set: { 'messages.extension.lastMessageSent': new Date() }
+                    $set: { messages }
                   })
                 })
             })

@@ -47,9 +47,15 @@ var cron = function cron() {
             return;
           }
 
+          var messages = {
+            extension: {
+              lastMessageSent: new Date()
+            }
+          };
+
           (0, _helpers.sendSms)(user, 'extension').then(function (response) {
             _Journey2.default.update({ _id: journey._id }, {
-              $set: { 'messages.extension.lastMessageSent': new Date() }
+              $set: { messages: messages }
             });
           });
         });
