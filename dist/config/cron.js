@@ -32,7 +32,8 @@ var cron = function cron() {
     var messageThreshold = (0, _moment2.default)().subtract(5, 'minutes').toDate();
     var selector = {
       'end': { $exists: false },
-      'eta': { $gte: messageThreshold }
+      'eta': { $gte: messageThreshold },
+      'messages.extension.lastMessageSent': { $gte: messageThreshold }
     };
 
     _Journey2.default.find(selector).exec().then(function (journeys) {
@@ -42,11 +43,9 @@ var cron = function cron() {
             return;
           }
 
-          var fiveMinutesAgo = (0, _moment2.default)().subtract(5, 'minutes').toDate();
-
           (0, _helpers.sendSms)(user, 'extension').then(function (response) {
             _Journey2.default.update({ _id: journey._id }, {
-              $set: { 'messages.extension.lastMessageSent': { $gte: fiveMinutesAgo } }
+              $set: { 'messages.extension.lastMessageSent': new Date() }
             });
           });
         });
