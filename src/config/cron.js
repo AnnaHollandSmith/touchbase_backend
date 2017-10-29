@@ -12,7 +12,8 @@ const cron = () => {
     const messageThreshold = moment().subtract(5, 'minutes').toDate()
     const selector = {
       'end': { $exists: false },
-      'eta': { $gte: messageThreshold }
+      'eta': { $gte: messageThreshold },
+      'messages.extension.lastMessageSent': { $gte: messageThreshold }
     }
 
     Journey.find(selector).exec()
@@ -24,12 +25,10 @@ const cron = () => {
                 return
               }
 
-              const fiveMinutesAgo = moment().subtract(5, 'minutes').toDate()
-
               sendSms(user, 'extension')
                 .then(response => {
                   Journey.update({ _id: journey._id }, {
-                    $set: { 'messages.extension.lastMessageSent': { $gte: fiveMinutesAgo } }
+                    $set: { 'messages.extension.lastMessageSent': new Date() }
                   })
                 })
             })
