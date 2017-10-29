@@ -33,7 +33,11 @@ var cron = function cron() {
     var selector = {
       'end': { $exists: false },
       'eta': { $gte: messageThreshold },
-      'messages.extension.lastMessageSent': { $or: [{ $gte: messageThreshold }, { $exists: false }] }
+      $or: [{
+        'messages.extension.lastMessageSent': { $gte: messageThreshold }
+      }, {
+        'messages.extension.lastMessageSent': { $exists: false }
+      }]
     };
 
     _Journey2.default.find(selector).exec().then(function (journeys) {

@@ -13,7 +13,13 @@ const cron = () => {
     const selector = {
       'end': { $exists: false },
       'eta': { $gte: messageThreshold },
-      'messages.extension.lastMessageSent': { $or: [{$gte: messageThreshold}, {$exists: false}] }
+      $or: [
+        {
+          'messages.extension.lastMessageSent': { $gte: messageThreshold }
+        }, {
+          'messages.extension.lastMessageSent': { $exists: false }
+        }
+      ]
     }
 
     Journey.find(selector).exec()
