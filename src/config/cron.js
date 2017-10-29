@@ -36,7 +36,10 @@ const cron = () => {
                   Journey.update({ _id: journey._id }, {
                     $set: { lastMessageSent: new Date() }
                   })
+                  .then(response => console.log(response))
+                  .catch(error => console.log(error))
                 })
+                .catch(error => console.log(error))
             })
         })
       })

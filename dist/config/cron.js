@@ -50,7 +50,13 @@ var cron = function cron() {
           (0, _helpers.sendSms)(user, 'extension').then(function (response) {
             _Journey2.default.update({ _id: journey._id }, {
               $set: { lastMessageSent: new Date() }
+            }).then(function (response) {
+              return console.log(response);
+            }).catch(function (error) {
+              return console.log(error);
             });
+          }).catch(function (error) {
+            return console.log(error);
           });
         });
       });
