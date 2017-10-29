@@ -5,7 +5,7 @@ import moment from 'moment'
 function createMessage (messageType, fields, additional) {
   const messages = {
     extension: `Hi ${fields.name}, we've noticed you haven't yet touched base at your destination. To add 5 minutes to your journey, text EXTEND to 84433.`,
-    extensionReply: `Hi ${fields.name}, we've extended your journey time by 5 minutes. Your new ETA is ${moment(additional.eta).format('HH:mm')}`
+    extensionReply: `Hi ${fields.name}, we've extended your journey time by 5 minutes. Your new ETA is ${moment(additional.eta).format('HH:mm')}.`
   }
 
   return messages[messageType]
@@ -21,6 +21,10 @@ const sendSms = (contacts, messageType, additional = {}) => {
             resolve([user])
           })
       } else {
+        if (!Array.isArray(contacts)) {
+          contacts = [contacts]
+        }
+
         resolve(contacts)
       }
     })
@@ -30,8 +34,8 @@ const sendSms = (contacts, messageType, additional = {}) => {
         const content = createMessage(messageType, contact, additional)
 
         request.post(`https://api.clockworksms.com/http/send.aspx?key=${process.env.CLOCKWORK_API_KEY}&to=${contact.mobileNumber}&content=${content}`)
-        .then(response => resolve(response))
-        .catch(error => reject(new Error(error)))
+          .then(response => resolve(response))
+          .catch(error => reject(new Error(error)))
       })
     })
   })

@@ -37,9 +37,9 @@ const journeySchema = mongoose.Schema({
       }
     }
   ],
-  messagesSent: {
+  messages: {
     extension: {
-      type: Boolean
+      lastMessageSent: Date
     }
   }
 })

@@ -5,7 +5,10 @@ import User from '../models/User'
 import { sendSms } from '../helpers'
 
 const cron = () => {
-  nodeSchedule.scheduleJob('* 1 * * * *', () => {
+  console.log('crons initialised')
+
+  nodeSchedule.scheduleJob('*/1 * * * *', function extendSms () {
+    console.log('executing extend sms cron')
     const messageThreshold = moment().subtract(5, 'minutes').toDate()
     const selector = {
       'end': { $exists: false },
@@ -21,10 +24,14 @@ const cron = () => {
                 return
               }
 
+              const fiveMinutesAgo = moment().subtract(5, 'minutes').toDate()
+
               sendSms(user, 'extension')
-                // .then(response => {
-                //   Journey.update({ _id: journey._id }, { $set: { 'messagesSent.extension': true } })
-                // })
+                .then(response => {
+                  Journey.update({ _id: journey._id }, {
+                    $set: { 'messages.extension.lastMessageSent': { $gte: fiveMinutesAgo } }
+                  })
+                })
             })
         })
       })
