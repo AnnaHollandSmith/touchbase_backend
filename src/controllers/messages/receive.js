@@ -20,8 +20,10 @@ const receive = (req, res, next) => {
       .then(journey => {
         console.log('sending sms')
         sendSms(process.env.OUR_NUMBER, 'escalate', journey)
-        res.send(200)
-        next()
+          .then(() => {
+            res.send(200)
+            next()
+          })
       })
   } else {
     switch (content) {
@@ -52,8 +54,10 @@ const receive = (req, res, next) => {
       case 'register':
         console.log('register')
         sendSms(process.env.OUR_NUMBER, 'register')
-        res.send(200)
-        next()
+          .then(() => {
+            res.send(200)
+            next()
+          })
         break
       case 'yes':
         Config.findOne({ key: 'is999Registered' })
