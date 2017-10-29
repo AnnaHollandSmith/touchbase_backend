@@ -17,6 +17,7 @@ const routes = (server) => {
 
   server.post('/journeys', journeyControllers.create)
   server.post('/journeys/terminate', journeyControllers.terminate)
+  server.post('/journeys/extend', journeyControllers.extend)
 
   server.get('/journeys/:mobileNumber', journeyControllers.find)
 

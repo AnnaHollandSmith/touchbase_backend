@@ -16,7 +16,9 @@ const extendJourney = mobileNumber => {
       Journey.update({_id: journey._id}, {$set: {eta: newEta}})
         .then(success => {
           sendSms(journey.mobileNumber, 'extensionReply', { eta: newEta })
-          resolve()
+            .then(message => {
+              resolve(message)
+            })
         })
         .catch(reject)
     })

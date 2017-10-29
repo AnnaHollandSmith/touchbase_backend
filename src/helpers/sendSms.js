@@ -14,6 +14,17 @@ function createMessage (messageType, fields, additional) {
   return messages[messageType]
 }
 
+function getAppMessage (messageType, fields, additional) {
+  const messages = {
+    extension: `We've noticed you haven't yet touched base at your destination. To add 5 minutes to your journey, text TOUCHBASE EXTEND to 84433. If you have arrived text TOUCHBASE HOME to 84433`,
+    extensionReply: `We've extended your journey time by 5 minutes. Your new ETA is ${moment(additional.eta).format('HH:mm')}.`,
+    terminateReply: `Thanks ${fields.name}. Glad you have made it home safely.`,
+    contact: `${additional.name} is using the TouchBase app to get home safely. They have not marked their journey as complete. Please try and contact them on ${additional.mobileNumber}.`
+  }
+
+  return messages[messageType]
+}
+
 const sendSms = (contacts, messageType, additional = {}) => {
   return new Promise((resolve, reject) => {
     const formatContactPromise = new Promise(resolve => {
@@ -50,7 +61,7 @@ const sendSms = (contacts, messageType, additional = {}) => {
                 throw new Error(error)
               }
 
-              resolve(response)
+              resolve(getAppMessage(messageType, contact, additional))
             })
           })
           .catch(error => reject(new Error(error)))

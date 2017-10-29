@@ -33,6 +33,17 @@ function createMessage(messageType, fields, additional) {
   return messages[messageType];
 }
 
+function getAppMessage(messageType, fields, additional) {
+  var messages = {
+    extension: 'We\'ve noticed you haven\'t yet touched base at your destination. To add 5 minutes to your journey, text TOUCHBASE EXTEND to 84433. If you have arrived text TOUCHBASE HOME to 84433',
+    extensionReply: 'We\'ve extended your journey time by 5 minutes. Your new ETA is ' + (0, _moment2.default)(additional.eta).format('HH:mm') + '.',
+    terminateReply: 'Thanks ' + fields.name + '. Glad you have made it home safely.',
+    contact: additional.name + ' is using the TouchBase app to get home safely. They have not marked their journey as complete. Please try and contact them on ' + additional.mobileNumber + '.'
+  };
+
+  return messages[messageType];
+}
+
 var sendSms = function sendSms(contacts, messageType) {
   var additional = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
@@ -70,7 +81,7 @@ var sendSms = function sendSms(contacts, messageType) {
               throw new Error(error);
             }
 
-            resolve(response);
+            resolve(getAppMessage(messageType, contact, additional));
           });
         }).catch(function (error) {
           return reject(new Error(error));
