@@ -21,7 +21,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function createMessage(messageType, fields, additional) {
   var messages = {
     extension: 'Hi ' + fields.name + ', we\'ve noticed you haven\'t yet touched base at your destination. To add 5 minutes to your journey, text EXTEND to 84433.',
-    extensionReply: 'Hi ' + fields.name + ', we\'ve extended your journey time by 5 minutes. Your new ETA is ' + (0, _moment2.default)(additional.eta).format('HH:mm')
+    extensionReply: 'Hi ' + fields.name + ', we\'ve extended your journey time by 5 minutes. Your new ETA is ' + (0, _moment2.default)(additional.eta).format('HH:mm') + '.'
   };
 
   return messages[messageType];
@@ -38,6 +38,10 @@ var sendSms = function sendSms(contacts, messageType) {
           resolve([user]);
         });
       } else {
+        if (!Array.isArray(contacts)) {
+          contacts = [contacts];
+        }
+
         resolve(contacts);
       }
     });

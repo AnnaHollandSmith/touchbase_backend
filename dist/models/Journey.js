@@ -45,9 +45,9 @@ var journeySchema = _mongoose2.default.Schema({
       required: true
     }
   }],
-  messagesSent: {
+  messages: {
     extension: {
-      type: Boolean
+      lastMessageSent: Date
     }
   }
 });

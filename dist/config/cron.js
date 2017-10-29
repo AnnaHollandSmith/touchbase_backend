@@ -25,7 +25,10 @@ var _helpers = require('../helpers');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var cron = function cron() {
-  _nodeSchedule2.default.scheduleJob('* 1 * * * *', function () {
+  console.log('crons initialised');
+
+  _nodeSchedule2.default.scheduleJob('*/1 * * * *', function extendSms() {
+    console.log('executing extend sms cron');
     var messageThreshold = (0, _moment2.default)().subtract(5, 'minutes').toDate();
     var selector = {
       'end': { $exists: false },
@@ -39,10 +42,13 @@ var cron = function cron() {
             return;
           }
 
-          (0, _helpers.sendSms)(user, 'extension');
-          // .then(response => {
-          //   Journey.update({ _id: journey._id }, { $set: { 'messagesSent.extension': true } })
-          // })
+          var fiveMinutesAgo = (0, _moment2.default)().subtract(5, 'minutes').toDate();
+
+          (0, _helpers.sendSms)(user, 'extension').then(function (response) {
+            _Journey2.default.update({ _id: journey._id }, {
+              $set: { 'messages.extension.lastMessageSent': { $gte: fiveMinutesAgo } }
+            });
+          });
         });
       });
     });
