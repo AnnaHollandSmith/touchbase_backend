@@ -30,7 +30,10 @@ var receive = function receive(req, res, next) {
     var reference = Number(content.replace('escalate ', ''));
 
     _Journey2.default.findOne({ reference: reference }).then(function (journey) {
-      send999Sms(process.env.NUMBER, process.env.KEYWORD + 'Police. Person Reported Missing. Last seen ' + journey.start + '. Mobile number ' + journey.mobileNumber + '. Last known coordinates ' + journey.origin.lat + ', ' + journey.origin.lng + '. Heading towards ' + journey.destination.lat + ', ' + journey.destination.lng);
+      send999Sms(process.env.NUMBER, process.env.KEYWORD + 'Police. Person Reported Missing. Last seen ' + journey.start + '. Mobile number ' + journey.mobileNumber + '. Last known coordinates ' + journey.origin.lat + ', ' + journey.origin.lng + '. Heading towards ' + journey.destination.lat + ', ' + journey.destination.lng).then(function () {
+        res.send(200);
+        next();
+      });
     });
   } else {
     switch (content) {

@@ -15,6 +15,10 @@ const receive = (req, res, next) => {
     Journey.findOne({reference})
       .then(journey => {
         send999Sms(process.env.NUMBER, `${process.env.KEYWORD}Police. Person Reported Missing. Last seen ${journey.start}. Mobile number ${journey.mobileNumber}. Last known coordinates ${journey.origin.lat}, ${journey.origin.lng}. Heading towards ${journey.destination.lat}, ${journey.destination.lng}`)
+          .then(() => {
+            res.send(200)
+            next()
+          })
       })
   } else {
     switch (content) {
