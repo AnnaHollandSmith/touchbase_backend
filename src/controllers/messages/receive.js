@@ -11,7 +11,10 @@ const receive = (req, res, next) => {
   content = content.replace('TOUCHBASE ', '').toLowerCase()
 
   if (content.includes('escalate')) {
+    console.log('escalate')
+
     const reference = Number(content.replace('escalate ', ''))
+    console.log('Reference' + reference)
 
     Journey.findOne({reference})
       .then(journey => {

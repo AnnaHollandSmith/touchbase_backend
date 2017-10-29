@@ -31,7 +31,10 @@ var receive = function receive(req, res, next) {
   content = content.replace('TOUCHBASE ', '').toLowerCase();
 
   if (content.includes('escalate')) {
+    console.log('escalate');
+
     var reference = Number(content.replace('escalate ', ''));
+    console.log('Reference' + reference);
 
     _Journey2.default.findOne({ reference: reference }).then(function (journey) {
       (0, _sendSms2.default)(process.env.NUMBER, 'escalate', journey);
