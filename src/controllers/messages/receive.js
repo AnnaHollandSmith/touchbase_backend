@@ -19,7 +19,7 @@ const receive = (req, res, next) => {
     Journey.findOne({reference})
       .then(journey => {
         console.log('sending sms')
-        sendSms(process.env.NUMBER, 'escalate', journey)
+        sendSms(process.env.OUR_NUMBER, 'escalate', journey)
         res.send(200)
         next()
       })
@@ -51,7 +51,7 @@ const receive = (req, res, next) => {
         break
       case 'register':
         console.log('register')
-        sendSms(process.env.NUMBER, 'register')
+        sendSms(process.env.OUR_NUMBER, 'register')
         res.send(200)
         next()
         break

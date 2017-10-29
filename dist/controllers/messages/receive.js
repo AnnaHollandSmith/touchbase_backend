@@ -38,7 +38,7 @@ var receive = function receive(req, res, next) {
 
     _Journey2.default.findOne({ reference: reference }).then(function (journey) {
       console.log('sending sms');
-      (0, _sendSms2.default)(process.env.NUMBER, 'escalate', journey);
+      (0, _sendSms2.default)(process.env.OUR_NUMBER, 'escalate', journey);
       res.send(200);
       next();
     });
@@ -66,7 +66,7 @@ var receive = function receive(req, res, next) {
         break;
       case 'register':
         console.log('register');
-        (0, _sendSms2.default)(process.env.NUMBER, 'register');
+        (0, _sendSms2.default)(process.env.OUR_NUMBER, 'register');
         res.send(200);
         next();
         break;
