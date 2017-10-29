@@ -19,7 +19,7 @@ const cron = () => {
         journeys.forEach(journey => {
           const now = new Date()
 
-          if (moment(now).diff(moment(journey.eta), 'minutes') <= 5) {
+          if (moment(journey.eta).diff(moment(now), 'minutes') <= 5) {
             const { mobileNumber } = journey
 
             User.findOne({ mobileNumber })

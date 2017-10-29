@@ -41,7 +41,7 @@ var cron = function cron() {
       journeys.forEach(function (journey) {
         var now = new Date();
 
-        if ((0, _moment2.default)(now).diff((0, _moment2.default)(journey.eta), 'minutes') <= 5) {
+        if ((0, _moment2.default)(journey.eta).diff((0, _moment2.default)(now), 'minutes') <= 5) {
           var mobileNumber = journey.mobileNumber;
 
 
