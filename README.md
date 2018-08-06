@@ -1,8 +1,6 @@
-# Restify Server Boilerplate
+# A backend for our Touchbase App using Restify
 
-[![Build Status](https://travis-ci.org/binoy14/restify-boilerplate.svg?branch=master)](https://travis-ci.org/binoy14/restify-boilerplate)
 
-Boilerplate code for Restify server with ES2015 enabled.
 
 ### Scripts
 
